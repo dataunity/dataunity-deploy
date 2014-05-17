@@ -1,0 +1,13 @@
+---
+- hosts: all
+
+  vars:
+    dev_db: dev
+    test_db: test
+
+    app: dataunity-web
+
+  roles:
+    - common
+    - webserver
+

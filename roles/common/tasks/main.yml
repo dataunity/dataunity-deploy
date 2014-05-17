@@ -1,0 +1,17 @@
+---
+- name: Update apt
+  apt: update_cache=yes
+  sudo: yes
+
+- name: Install base packages
+  apt: pkg={{ item }} state=latest
+  sudo: yes
+  with_items:
+    - git-core
+    - build-essential
+    - nodejs
+    - curl
+    - python-psycopg2
+    - python-virtualenv
+    - python-dev
+    - libpq-dev
