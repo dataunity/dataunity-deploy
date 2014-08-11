@@ -1,0 +1,50 @@
+---
+- name: Create program dir
+  sudo: yes
+  file: state=directory path=/opt/fuseki
+
+- name: Download fuseki
+  sudo: yes
+  get_url:
+    url: http://archive.apache.org/dist/jena/binaries/jena-fuseki-{{ fuseki_version }}-distribution.tar.gz
+    dest: /opt/fuseki/jena-fuseki-{{ fuseki_version }}-distribution.tar.gz
+    force: no
+
+- name: Unzip fuseki
+  sudo: yes
+  unarchive: 
+    src: /opt/fuseki/jena-fuseki-{{ fuseki_version }}-distribution.tar.gz
+    dest: /opt/fuseki
+
+- name: Make commands executable
+  sudo: yes
+  shell: chmod +x fuseki-server s-* chdir=/opt/fuseki/jena-fuseki-{{ fuseki_version }}
+
+- name: Create log dir
+  sudo: yes
+  file: state=directory path=/var/opt/fuseki/log
+
+- name: Create data dir for production
+  sudo: yes
+  file: state=directory path=/var/opt/fuseki/lib/dataunity-production
+
+- name: Create data dir for staging
+  sudo: yes
+  file: state=directory path=/var/opt/fuseki/lib/dataunity-staging
+
+- name: Create data dir for dev
+  sudo: yes
+  file: state=directory path=/var/opt/fuseki/lib/dataunity-dev
+
+- name: Add config file
+  sudo: yes
+  copy: src=fuseki-config.ttl dest=/etc/opt/fuseki-config.ttl force=no
+
+- name: Copy service script
+  sudo: yes
+  template: src=fuseki.j2 dest=/etc/init.d/fuseki mode=755
+  notify: Restart fuseki
+
+- name: Setup service
+  sudo: yes
+  service: name=fuseki state=started enabled=yes

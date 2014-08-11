@@ -1,0 +1,4 @@
+---
+- name: Restart fuseki
+  sudo: yes
+  service: name=fuseki state=restarted
