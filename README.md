@@ -23,7 +23,7 @@ For playbooks which need sudo priviledges, prompt for the sudo password:
 ansible-playbook -K fuseki.yml
 </pre>
 
-For remote servers which sudo password and ssh password might be needed:
+For remote servers sudo password and ssh password might be needed:
 
 <pre>
 ansible-playbook -k -K fuseki.yml
