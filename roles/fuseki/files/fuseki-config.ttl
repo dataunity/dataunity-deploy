@@ -18,8 +18,9 @@
    # ja:loadClass "your.code.Class" ;
 
    fuseki:services (
-     <#service_tdb_read_only>
-     <#service_tdb_all>
+     <#service_du_production>
+     <#service_du_staging>
+     <#service_du_dev>
    ) .
 
 # TDB
@@ -28,32 +29,11 @@ tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
 tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 
 ## ---------------------------------------------------------------
-## Read-only TDB dataset (only read services enabled).
+## DU Production: Updatable TDB dataset with all services enabled.
 
-<#service_tdb_read_only> rdf:type fuseki:Service ;
-    rdfs:label                      "TDB Service (R)" ;
-    fuseki:name                     "ds" ;
-    fuseki:serviceQuery             "query" ;
-    fuseki:serviceQuery             "sparql" ;
-    # Don't allow SPARQL Update.
-    #fuseki:serviceUpdate            "update" ;
-    # Use the read-only service.
-    fuseki:serviceReadGraphStore    "data" ;
-    fuseki:serviceReadGraphStore    "get" ;
-    fuseki:dataset           <#tdb_dataset_read> ;
-    .
-
-<#tdb_dataset_read> rdf:type      tdb:DatasetTDB ;
-    tdb:location "/var/opt/fuseki/lib/dataunity-staging" ;
-    tdb:unionDefaultGraph true ;
-    .
-
-## ---------------------------------------------------------------
-## Updatable TDB dataset with all services enabled.
-
-<#service_tdb_all> rdf:type fuseki:Service ;
+<#service_du_production> rdf:type fuseki:Service ;
     rdfs:label                      "TDB Service (RW)" ;
-    fuseki:name                     "data" ;
+    fuseki:name                     "duprod" ;
     fuseki:serviceQuery             "query" ;
     fuseki:serviceQuery             "sparql" ;
     fuseki:serviceUpdate            "update" ;
@@ -61,11 +41,57 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     fuseki:serviceReadWriteGraphStore      "data" ;
     # A separate read-only graph store endpoint:
     fuseki:serviceReadGraphStore       "get" ;
-    fuseki:dataset           <#tdb_dataset_readwrite> ;
+    fuseki:dataset           <#tdb_dataset_du_prod_readwrite> ;
     .
 
-<#tdb_dataset_readwrite> rdf:type      tdb:DatasetTDB ;
+<#tdb_dataset_du_prod_readwrite> rdf:type      tdb:DatasetTDB ;
     tdb:location "/var/opt/fuseki/lib/dataunity-production" ;
+##     # Query timeout on this dataset (milliseconds)
+##     ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
+##     # Default graph for query is the (read-only) union of all named graphs.
+     .
+
+## ---------------------------------------------------------------
+## DU Staging: Updatable TDB dataset with all services enabled.
+
+<#service_du_staging> rdf:type fuseki:Service ;
+    rdfs:label                      "TDB Service (RW)" ;
+    fuseki:name                     "dustaging" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceUpdate            "update" ;
+    fuseki:serviceUpload            "upload" ;
+    fuseki:serviceReadWriteGraphStore      "data" ;
+    # A separate read-only graph store endpoint:
+    fuseki:serviceReadGraphStore       "get" ;
+    fuseki:dataset           <#tdb_dataset_du_staging_readwrite> ;
+    .
+
+<#tdb_dataset_du_staging_readwrite> rdf:type      tdb:DatasetTDB ;
+    tdb:location "/var/opt/fuseki/lib/dataunity-staging" ;
+##     # Query timeout on this dataset (milliseconds)
+##     ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
+##     # Default graph for query is the (read-only) union of all named graphs.
+     .
+
+## ---------------------------------------------------------------
+## DU Dev: Updatable TDB dataset with all services enabled.
+
+<#service_du_dev> rdf:type fuseki:Service ;
+    rdfs:label                      "TDB Service (RW)" ;
+    fuseki:name                     "dudev" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceUpdate            "update" ;
+    fuseki:serviceUpload            "upload" ;
+    fuseki:serviceReadWriteGraphStore      "data" ;
+    # A separate read-only graph store endpoint:
+    fuseki:serviceReadGraphStore       "get" ;
+    fuseki:dataset           <#tdb_dataset_du_dev_readwrite> ;
+    .
+
+<#tdb_dataset_du_dev_readwrite> rdf:type      tdb:DatasetTDB ;
+    tdb:location "/var/opt/fuseki/lib/dataunity-dev" ;
 ##     # Query timeout on this dataset (milliseconds)
 ##     ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
 ##     # Default graph for query is the (read-only) union of all named graphs.
